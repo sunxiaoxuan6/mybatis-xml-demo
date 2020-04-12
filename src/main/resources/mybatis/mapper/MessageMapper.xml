@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mybatisxmldemo.mapper.MessageMapper">
+    <resultMap id="BaseResultMap" type="com.example.mybatisxmldemo.model.Message">
+        <id column="msg_id" property="msgId" jdbcType="BIGINT"/>
+        <result column="msg_text" property="msgText" jdbcType="VARCHAR"/>
+        <result column="msg_summary" property="msgSummary" jdbcType="VARCHAR"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.example.mybatisxmldemo.model.Message">
+        insert into message(msg_text,msg_summary) values (#{msgText},#{msgSummary})
+    </insert>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select * from message
+    </select>
+
+    <select id="selectById" parameterType="Integer" resultMap="BaseResultMap">
+        select * from message where msg_id=#{msgId}
+    </select>
+
+    <delete id="delete" parameterType="Integer">
+        delete from message where msg_id=#{msgId}
+    </delete>
+
+    <update id="update" parameterType="com.example.mybatisxmldemo.model.Message">
+        update message set
+        <if test="msgText!=null">msg_text=#{msgText},</if>
+        <if test="msgSummary!=null">msg_summary=#{msgSummary}</if>
+        where msg_id = #{msgId}
+    </update>
+
+    <insert id="batchInsert" parameterType="com.example.mybatisxmldemo.model.Message">
+        insert into message (msg_text,msg_summary) values
+        <foreach collection="list" item="msg" index="index" separator=",">
+            (#{msg.msgText},#{msg.msgSummary})
+        </foreach>
+    </insert>
+
+    <update id="updateText" parameterType="com.example.mybatisxmldemo.model.Message">
+        update message
+        <set>
+            <if test="msgText!=null and msgText!=''">msg_text=#{msgText}</if>
+            <if test="msgSummary!=null and msgSummary!=''">msg_summary=#{msgSummary}</if>
+        </set>
+        where msg_id = #{msgId}
+    </update>
+</mapper>
